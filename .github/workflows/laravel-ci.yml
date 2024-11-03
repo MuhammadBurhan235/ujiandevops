@@ -3,10 +3,10 @@ name: Laravel CI
 on:
   push:
     branches:
-      - main
+      - ujiandevops
   pull_request:
     branches:
-      - main
+      - ujiandevops
 
 jobs:
   test:
