@@ -1,38 +1,70 @@
-name: Laravel CI
+name: Testing Laravel with MySQL
 
 on:
   push:
-    branches:
-      - ujiandevops
+    branches: ["ujiandevops"]
   pull_request:
-    branches:
-      - ujiandevops
+    branches: ["ujiandevops"]
 
 jobs:
-  test:
+  laravel:
+    name: Laravel (PHP 8.0)
     runs-on: ubuntu-latest
+    env:
+      DB_DATABASE: inkostel
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      BROADCAST_DRIVER: log
+    services:
+      mysql:
+        image: mysql:8.0 # Anda bisa menggunakan mysql:5.7 jika Anda lebih suka
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: inkostel
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up PHP
+      - name: Setup PHP, with composer and extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.1" # Ganti dengan versi PHP yang sesuai
-          extensions: mbstring, xml, bcmath, curl, sqlite3 # Tambahkan ekstensi PHP yang dibutuhkan
+          php-version: "8.0"
+          extensions: mbstring, dom, fileinfo, mysql
+          coverage: xdebug # optional
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
 
-      - name: Copy .env.example to .env
-        run: cp .env.example .env
+      - name: Prepare the application
+        run: |
+          php -r "file_exists('.env') || copy('.env.example', '.env');"
+          php artisan key:generate
 
-      - name: Generate application key
-        run: php artisan key:generate
+      - name: Clear Config
+        run: php artisan config:clear
 
-      - name: Run database migrations
-        run: php artisan migrate --env=testing
+      - name: Run Migration
+        run: php artisan migrate -v
+        env:
+          DB_PORT: 3306 # Port MySQL yang digunakan
 
-      - name: Run tests
-        run: vendor/bin/phpunit
+      - name: Test with phpunit
+        run: vendor/bin/phpunit --coverage-text
+        env:
+          DB_PORT: 3306 # Port MySQL yang digunakan
