@@ -62,7 +62,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           sonar-scanner \
-            -Dsonar.projectKey=MuhammadBurhan235/ujiandevops \
+            -Dsonar.projectKey=MuhammadBurhan235_ujiandevops \
             -Dsonar.organization=MuhammadBurhan235 \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN
