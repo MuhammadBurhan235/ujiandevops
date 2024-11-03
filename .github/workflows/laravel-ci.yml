@@ -55,3 +55,14 @@ jobs:
       - name: Run tests
         run: php artisan test
         working-directory: ./
+
+      - name: SonarQube Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=MuhammadBurhan235_Continuous-Inspection \
+            -Dsonar.organization=MuhammadBurhan235 \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=$SONAR_TOKEN
