@@ -16,10 +16,10 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: your_password
+          MYSQL_ROOT_PASSWORD:
           MYSQL_DATABASE: inkostel
-          MYSQL_USER: your_user
-          MYSQL_PASSWORD: your_password
+          MYSQL_USER: root
+          MYSQL_PASSWORD:
         ports:
           - 3306:3306
         options: >-
