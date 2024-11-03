@@ -33,7 +33,7 @@ jobs:
           php-version: "8.1"
 
       - name: Copy .env.example to .env
-        run: cp ./INKOSTEL/.env ./INKOSTEL/.env.backup
+        run: cp .env .env.backup
 
       - name: Update .env for MySQL
         run: |
