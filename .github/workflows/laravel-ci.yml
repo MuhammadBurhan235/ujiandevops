@@ -33,16 +33,16 @@ jobs:
           php-version: "8.1"
 
       - name: Copy .env.example to .env
-        run: cp INKOSTEL\.env INKOSTEL\.env.backup
+        run: cp .env .env.backup
 
       - name: Update .env for MySQL
         run: |
-          echo "DB_CONNECTION=mysql" >> ./INKOSTEL/.env
-          echo "DB_HOST=127.0.0.1" >> ./INKOSTEL/.env
-          echo "DB_PORT=3306" >> ./INKOSTEL/.env
-          echo "DB_DATABASE=testing" >> ./INKOSTEL/.env
-          echo "DB_USERNAME=user" >> ./INKOSTEL/.env
-          echo "DB_PASSWORD=password" >> ./INKOSTEL/.env
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=testing" >> .env
+          echo "DB_USERNAME=user" >> .env
+          echo "DB_PASSWORD=password" >> .env
 
       - name: Run Composer
         run: composer install --no-interaction
